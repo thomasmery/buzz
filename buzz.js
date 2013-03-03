@@ -57,7 +57,17 @@
         sounds: [],
         el: document.createElement('audio'),
 
-        sound: function (src, options) {
+        sound: function (srcOrEl, options) {
+
+            var src, el;
+
+            if(srcOrEl instanceof HTMLAudioElement) {
+                el = srcOrEl;
+            }
+            else if(typeof(srcOrEl) == "string") {
+                src = srcOrEl;
+            }
+
             options = options || {};
 
             var doc = options.document || buzz.defaults.document;
@@ -637,7 +647,7 @@
             }
 
             // init
-            if (supported && src) {
+            if (supported && (src || el)) {
               
                 for (var i in buzz.defaults) {
                     if (buzz.defaults.hasOwnProperty(i)) {
@@ -645,22 +655,28 @@
                     }
                 }
 
-                this.sound = doc.createElement('audio');
+                if(src) {
 
-                if (src instanceof Array) {
-                    for (var j in src) {
-                        if (src.hasOwnProperty(j)) {
-                            addSource(this.sound, src[j]);
+                    this.sound = doc.createElement('audio');
+
+                    if (src instanceof Array) {
+                        for (var j in src) {
+                            if (src.hasOwnProperty(j)) {
+                                addSource(this.sound, src[j]);
+                            }
                         }
-                    }
-                } else if (options.formats.length) {
-                    for (var k in options.formats) {
-                        if (options.formats.hasOwnProperty(k)) {
-                            addSource(this.sound, src + '.' + options.formats[k]);
+                    } else if (options.formats.length) {
+                        for (var k in options.formats) {
+                            if (options.formats.hasOwnProperty(k)) {
+                                addSource(this.sound, src + '.' + options.formats[k]);
+                            }
                         }
+                    } else {
+                        addSource(this.sound, src);
                     }
-                } else {
-                    addSource(this.sound, src);
+                }
+                else {
+                    this.sound = el;
                 }
 
                 if (options.loop) {
