@@ -61,7 +61,7 @@
 
             var src, el;
 
-            if(srcOrEl instanceof HTMLAudioElement) {
+            if(srcOrEl instanceof HTMLAudioElement || srcOrEl instanceof HTMLVideoElement) {
                 el = srcOrEl;
             }
             else if(typeof(srcOrEl) == "string") {
